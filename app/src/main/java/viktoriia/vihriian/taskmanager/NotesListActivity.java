@@ -2,6 +2,9 @@ package viktoriia.vihriian.taskmanager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,11 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +35,10 @@ public class NotesListActivity extends AppCompatActivity {
     public Toolbar toolbar;
     public Context myContext;
     public NotesListAdapter adapter;
+    public static SharedPreferences mPrefs;
+    public Gson gson;
+    public static Intent intent;
+    public static final String APP_PREFERENCES = "notes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +49,14 @@ public class NotesListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         myContext = NotesListActivity.this;
+        intent = getIntent();
         notesList = new ArrayList<>();
+        //mPrefs = getSharedPreferences(APP_PREFERENCES, myContext.MODE_PRIVATE);
+        mPrefs = getSharedPreferences("myNotes", MODE_PRIVATE);//PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        gson = new Gson();
 
         fillNotesList();
+
         rvNotes = (RecyclerView) findViewById(R.id.rv);
         adapter = new NotesListAdapter(notesList);
 
@@ -58,18 +75,23 @@ public class NotesListActivity extends AppCompatActivity {
                 })
         );*/
         rvNotes.setAdapter(adapter);
-
-
     }
 
     public void fillNotesList() {
-        Calendar calendar;
-        for(int i = 0; i < 5; i++) {
-            calendar = Calendar.getInstance();
-            notesList.add(new Note("Name" + i + 1, "Description " + i + 1,
-                    DateFormatter.formatDateAsLong(calendar), false));
+        if(!getFromPref()) {
+            System.out.println("Notes are not found!");
         }
     }
+
+    public boolean getFromPref() {
+        if(mPrefs.contains("MyNotes")) {
+            String json = mPrefs.getString("MyNotes", "");
+            notesList.addAll(gson.fromJson(json, NotesList.class).getAll());
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,10 +108,26 @@ public class NotesListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_add:
+                Intent intent = new Intent(NotesListActivity.this, NotesCreationActivity.class);
+                intent.putExtra("id", adapter.getItemCount());
+                startActivityForResult(intent, 1);
+                return true;
+            case R.id.action_search:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        Note note = gson.fromJson(data.getStringExtra("note"), Note.class);
+        System.out.println(note);
+        adapter.add(note);
     }
 }

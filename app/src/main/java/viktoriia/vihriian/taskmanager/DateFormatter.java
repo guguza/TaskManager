@@ -3,6 +3,7 @@ package viktoriia.vihriian.taskmanager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Администратор on 26.05.2015.
@@ -32,13 +33,10 @@ public class DateFormatter {
         }
     }
 
-    public static String getStringFromFormattedLong(long l){
-        try {
-            Calendar c = Calendar.getInstance();
-            c.setTime(dateFormat.parse(String.valueOf(l)));
+    public static String getStringFromFormattedLong(long l) {
+            Calendar c = new GregorianCalendar();
+            c.setTimeInMillis(l * 1000);
+            dateFormatForHumans.setCalendar(c);
             return dateFormatForHumans.format(c.getTime());
-        } catch (ParseException e) {
-            return null;
-        }
     }
 }

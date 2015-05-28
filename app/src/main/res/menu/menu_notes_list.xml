@@ -3,4 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".NotesListActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="200"
+        android:title="Add note"
+        android:icon="@mipmap/ic_plus"
+        app:showAsAction="always"
+        ></item>
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:icon="@mipmap/ic_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        ></item>
 </menu>
