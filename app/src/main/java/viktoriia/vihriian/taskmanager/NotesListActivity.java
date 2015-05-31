@@ -17,8 +17,13 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.hudomju.swipe.OnItemClickListener;
+import com.hudomju.swipe.SwipeToDismissTouchListener;
+import com.hudomju.swipe.SwipeableItemClickListener;
+import com.hudomju.swipe.adapter.RecyclerViewAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,32 +56,52 @@ public class NotesListActivity extends AppCompatActivity {
         myContext = NotesListActivity.this;
         intent = getIntent();
         notesList = new ArrayList<>();
-        //mPrefs = getSharedPreferences(APP_PREFERENCES, myContext.MODE_PRIVATE);
-        mPrefs = getSharedPreferences("myNotes", MODE_PRIVATE);//PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mPrefs = getSharedPreferences("myNotes", MODE_PRIVATE);
         gson = new Gson();
 
         fillNotesList();
 
         rvNotes = (RecyclerView) findViewById(R.id.rv);
         adapter = new NotesListAdapter(notesList);
-
-        LinearLayoutManager llm = new LinearLayoutManager(myContext);
-        rvNotes.setLayoutManager(llm);
-        /*rvNotes.addOnItemTouchListener(
-                 new RecyclerItemClickListener(myContext, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int pos) {
-                        Animation fadeIn = new AlphaAnimation(0, 1);
-                        fadeIn.setDuration(300);
-                        view.startAnimation(fadeIn);
-                        startIntentWithExtras(pos);
-
-                    }
-                })
-        );*/
+        initRecyclerView();
         rvNotes.setAdapter(adapter);
     }
 
+    private void initRecyclerView() {
+        LinearLayoutManager llm = new LinearLayoutManager(myContext);
+        rvNotes.setLayoutManager(llm);
+        final SwipeToDismissTouchListener<RecyclerViewAdapter> touchListener =
+                new SwipeToDismissTouchListener<>(
+                        new RecyclerViewAdapter(rvNotes),
+                        new SwipeToDismissTouchListener.DismissCallbacks<RecyclerViewAdapter>() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(RecyclerViewAdapter view, int position) {
+                                adapter.removeAt(position);
+                            }
+                        });
+
+        rvNotes.setOnTouchListener(touchListener);
+        rvNotes.setOnScrollListener((RecyclerView.OnScrollListener) touchListener.makeScrollListener());
+        rvNotes.addOnItemTouchListener(new SwipeableItemClickListener(this,
+                new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (view.getId() == R.id.tv_delete) {
+                            touchListener.processPendingDismisses();
+                            //adapter.deleteNote();
+                        } else if (view.getId() == R.id.tv_undo) {
+                            touchListener.undoPendingDismiss();
+                        } else { // R.id.txt_data
+                            Toast.makeText(myContext, "Position " + position, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }));
+    }
     public void fillNotesList() {
         if(!getFromPref()) {
             System.out.println("Notes are not found!");

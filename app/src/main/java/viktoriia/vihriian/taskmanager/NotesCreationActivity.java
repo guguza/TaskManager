@@ -1,10 +1,11 @@
 package viktoriia.vihriian.taskmanager;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,25 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
-/**
- * Created by Администратор on 27.05.2015.
- */
 public class NotesCreationActivity extends AppCompatActivity {
 
     public Toolbar toolbar;
     public Context myContext;
-    public NotesListAdapter adapter;
     public SharedPreferences mPrefs;
     public Gson gson;
     public long time;
@@ -69,13 +62,13 @@ public class NotesCreationActivity extends AppCompatActivity {
         final View dialogView = View.inflate(myContext, R.layout.date_time_picker, null);
         alertDialog = new AlertDialog.Builder(myContext).create();
 
+        final DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+        final TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+        timePicker.setIs24HourView(true);
+
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
-                //timePicker.setIs24HourView(DateFormat.is24HourFormat(myContext));
 
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                         datePicker.getMonth(),
@@ -102,6 +95,7 @@ public class NotesCreationActivity extends AppCompatActivity {
             case R.id.action_save:
                 if(isFilledCorrectly()) {
                     saveNote();
+                    setAlarm();
                     finish();
                 }
                 return true;
@@ -116,6 +110,20 @@ public class NotesCreationActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         int id = intent.getExtras().getInt("id");
+    }
+
+    private void setAlarm() {
+        Intent myIntent = new Intent(NotesCreationActivity.this, MyAlarmReceiver.class);
+        myIntent.putExtra("time", time);
+        myIntent.putExtra("title", name.getText().toString());
+        myIntent.putExtra("description", description.getText().toString());
+
+        Calendar c = new GregorianCalendar();
+        c.setTimeInMillis(time * 1000);
+        long t = c.getTimeInMillis();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(NotesCreationActivity.this, (int) time, myIntent, 0);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, t, pendingIntent);
     }
 
     private void saveNote() {

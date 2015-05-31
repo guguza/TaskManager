@@ -13,7 +13,7 @@
         android:layout_height="60dp"
         android:id="@+id/et_name"
         android:textSize="20sp"
-        android:textColorHint="@color/grey"
+        android:textColorHint="@color/light_grey"
         android:hint="Название"/>
 
     <EditText
@@ -22,7 +22,7 @@
         android:inputType="textMultiLine"
         android:textSize="16sp"
         android:id="@+id/et_description"
-        android:textColorHint="@color/grey"
+        android:textColorHint="@color/light_grey"
         android:hint="Текст"
         android:gravity="top"/>
 </LinearLayout>

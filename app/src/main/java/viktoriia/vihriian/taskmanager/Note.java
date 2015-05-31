@@ -1,8 +1,5 @@
 package viktoriia.vihriian.taskmanager;
 
-/**
- * Created by Администратор on 26.05.2015.
- */
 public class Note {
     private String name;
     private String text;

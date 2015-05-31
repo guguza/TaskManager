@@ -15,9 +15,6 @@ import java.util.ArrayList;
 
 import viktoriia.vihriian.taskmanager.Note;
 
-/**
- * Created by Администратор on 21.05.2015.
- */
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesListViewHolder> {
 
     ArrayList<Note> notes;
@@ -71,13 +68,13 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             date = (TextView)v.findViewById(R.id.tv_date);
             checkBox = (CheckBox) v.findViewById(R.id.check_box);
 
-            v.setOnLongClickListener(new View.OnLongClickListener() {
+            /*v.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     removeAt(getAdapterPosition());
                     return false;
                 }
-            });
+            });*/
         }
     }
 
@@ -93,7 +90,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         deleteNote();
     }
 
-    private void deleteNote() {
+    public void deleteNote() {
         SharedPreferences.Editor prefsEditor = NotesListActivity.mPrefs.edit();
         NotesList nArr = new NotesList();
         nArr.addAll(notes);
