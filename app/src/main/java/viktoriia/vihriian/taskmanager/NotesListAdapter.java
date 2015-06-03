@@ -1,24 +1,30 @@
 package viktoriia.vihriian.taskmanager;
 
-import android.content.SharedPreferences;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import viktoriia.vihriian.taskmanager.Note;
-
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesListViewHolder> {
 
+    private SharedPreferencesManager mPrefsManager;
     ArrayList<Note> notes;
     public Gson gson;
+    private Context myContext;
 
     public NotesListAdapter(ArrayList<Note> p) {
         notes = new ArrayList<>();
@@ -32,8 +38,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     @Override
     public NotesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        myContext = parent.getContext();
+        View v = LayoutInflater.from(myContext).inflate(R.layout.row, parent, false);
         NotesListViewHolder holder = new NotesListViewHolder(v);
+        mPrefsManager = SharedPreferencesManager.getInstance(myContext);
         gson = new Gson();
         return holder;
     }
@@ -46,6 +54,11 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.date.setText(DateFormatter
                 .getStringFromFormattedLong(notes.get(pos).getDate()));
         holder.checkBox.setChecked(notes.get(pos).isComplite());
+        if(notes.get(pos).isAlarm() && DateFormatter.isActual(notes.get(pos).getDate())) {
+            holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
+        } else {
+            holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
+        }
     }
 
     @Override
@@ -59,6 +72,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         TextView description;
         TextView date;
         CheckBox checkBox;
+        ImageView alarm;
 
         public NotesListViewHolder(View v) {
             super(v);
@@ -67,14 +81,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             description = (TextView)v.findViewById(R.id.tv_description);
             date = (TextView)v.findViewById(R.id.tv_date);
             checkBox = (CheckBox) v.findViewById(R.id.check_box);
-
-            /*v.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    removeAt(getAdapterPosition());
-                    return false;
-                }
-            });*/
+            alarm = (ImageView) v.findViewById(R.id.iv_alarm);
         }
     }
 
@@ -84,19 +91,21 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
     }
 
     public void removeAt(int position) {
+        cancelAlarm(position);
         notes.remove(position);
         this.notifyItemRemoved(position);
         this.notifyItemRangeChanged(position, notes.size());
-        deleteNote();
+        updateNotes();
     }
 
-    public void deleteNote() {
-        SharedPreferences.Editor prefsEditor = NotesListActivity.mPrefs.edit();
+    public void updateNotes() {
         NotesList nArr = new NotesList();
         nArr.addAll(notes);
-        String json = gson.toJson(nArr);
-        prefsEditor.putString("MyNotes", json);
-        prefsEditor.commit();
+        mPrefsManager.saveNotesList(nArr);
     }
 
+    private void cancelAlarm(int pos) {
+        MyAlarmManager.cancelAlarm(myContext, MyAlarmReceiver.class, notes.get(pos).getId(),
+                notes.get(pos).getDate(), notes.get(pos).getName(), notes.get(pos).getText());
+    }
 }

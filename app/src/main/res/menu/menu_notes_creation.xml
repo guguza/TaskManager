@@ -3,16 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".NotesCreationActivity">
     <item
         android:id="@+id/action_save"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         android:title="Save note"
         android:icon="@mipmap/ic_okey"
         app:showAsAction="always"
         ></item>
     <item
         android:id="@+id/action_pick_date_time"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         android:title="Pick date/time"
-        android:icon="@mipmap/ic_calendar"
+        android:icon="@mipmap/ic_calendar_off"
+        app:showAsAction="always"
+        ></item>
+    <item
+        android:id="@+id/action_alarm"
+        android:orderInCategory="100"
+        android:title="Set/cancel alarm"
+        android:icon="@mipmap/ic_alarm_off"
         app:showAsAction="always"
         ></item>
 </menu>

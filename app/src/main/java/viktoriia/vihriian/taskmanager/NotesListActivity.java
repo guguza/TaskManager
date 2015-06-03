@@ -1,6 +1,8 @@
 package viktoriia.vihriian.taskmanager;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,10 +44,9 @@ public class NotesListActivity extends AppCompatActivity {
     public Toolbar toolbar;
     public Context myContext;
     public NotesListAdapter adapter;
-    public static SharedPreferences mPrefs;
+    public static SharedPreferencesManager mPrefsManager;
     public Gson gson;
     public static Intent intent;
-    public static final String APP_PREFERENCES = "notes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +59,10 @@ public class NotesListActivity extends AppCompatActivity {
         myContext = NotesListActivity.this;
         intent = getIntent();
         notesList = new ArrayList<>();
-        mPrefs = getSharedPreferences("myNotes", MODE_PRIVATE);
+        mPrefsManager = SharedPreferencesManager.getInstance(getApplicationContext());
         gson = new Gson();
 
-        fillNotesList();
+        fillNotesFromPref();
 
         rvNotes = (RecyclerView) findViewById(R.id.rv);
         adapter = new NotesListAdapter(notesList);
@@ -96,25 +99,56 @@ public class NotesListActivity extends AppCompatActivity {
                             //adapter.deleteNote();
                         } else if (view.getId() == R.id.tv_undo) {
                             touchListener.undoPendingDismiss();
-                        } else { // R.id.txt_data
-                            Toast.makeText(myContext, "Position " + position, Toast.LENGTH_SHORT).show();
+                        } else if (view.getId() == R.id.check_box) {
+                            CheckBox complite = (CheckBox) view.findViewById(R.id.check_box);
+                            if(!complite.isChecked()) {
+                                adapter.notes.get(position).setComplite(true);
+                            } else {
+                                adapter.notes.get(position).setComplite(false);
+                            }
+                            adapter.updateNotes();
+                        } else if (view.getId() == R.id.iv_alarm) {
+
+                            ImageView alarm = (ImageView) view.findViewById(R.id.iv_alarm);
+
+                            if(DateFormatter.isActual(adapter.notes.get(position).getDate())) {
+                                if(adapter.notes.get(position).isAlarm()) {
+                                    Toast.makeText(myContext, "Alarm is OFF!",
+                                            Toast.LENGTH_SHORT).show();
+                                    adapter.notes.get(position).setAlarm(false);
+                                    alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
+                                    MyAlarmManager.cancelAlarm(NotesListActivity.this,
+                                            MyAlarmReceiver.class, adapter.notes.get(position));
+                                } else {
+                                    Toast.makeText(myContext, "Alarm is ON!",
+                                            Toast.LENGTH_SHORT).show();
+                                    adapter.notes.get(position).setAlarm(true);
+                                    alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
+                                    MyAlarmManager.setAlarm(NotesListActivity.this,
+                                            MyAlarmReceiver.class, adapter.notes.get(position));
+                                }
+                            } else {
+                                if(adapter.notes.get(position).isAlarm()) {
+                                    adapter.notes.get(position).setAlarm(false);
+                                    alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
+                                    MyAlarmManager.cancelAlarm(NotesListActivity.this,
+                                            MyAlarmReceiver.class, adapter.notes.get(position));
+                                }
+                                Toast.makeText(myContext, "Task is not actual anymore!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            adapter.updateNotes();
                         }
                     }
                 }));
     }
-    public void fillNotesList() {
-        if(!getFromPref()) {
-            System.out.println("Notes are not found!");
-        }
-    }
 
-    public boolean getFromPref() {
-        if(mPrefs.contains("MyNotes")) {
-            String json = mPrefs.getString("MyNotes", "");
-            notesList.addAll(gson.fromJson(json, NotesList.class).getAll());
-            return true;
+    public void fillNotesFromPref() {
+        if(mPrefsManager.getNotesList() == null) {
+            Toast.makeText(myContext, "Notes are not found!", Toast.LENGTH_SHORT).show();
+        } else {
+            notesList.addAll(mPrefsManager.getNotesList().getAll());
         }
-        return false;
     }
 
 
@@ -141,8 +175,6 @@ public class NotesListActivity extends AppCompatActivity {
                 intent.putExtra("id", adapter.getItemCount());
                 startActivityForResult(intent, 1);
                 return true;
-            case R.id.action_search:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -152,7 +184,6 @@ public class NotesListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {return;}
         Note note = gson.fromJson(data.getStringExtra("note"), Note.class);
-        System.out.println(note);
         adapter.add(note);
     }
 }

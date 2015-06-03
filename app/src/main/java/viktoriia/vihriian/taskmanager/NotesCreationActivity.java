@@ -4,12 +4,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,20 +20,20 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 
 public class NotesCreationActivity extends AppCompatActivity {
 
     public Toolbar toolbar;
     public Context myContext;
-    public SharedPreferences mPrefs;
+    public SharedPreferencesManager mPrefsManager;
     public Gson gson;
     public long time;
     private AlertDialog alertDialog;
-    private int id;
     private EditText name;
     private EditText description;
     private Intent intent;
+    private int id;
+    private boolean isAlarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +50,7 @@ public class NotesCreationActivity extends AppCompatActivity {
         myContext = NotesCreationActivity.this;
         intent = getIntent();
 
-        id = intent.getExtras().getInt("id");
-        mPrefs = getSharedPreferences("myNotes", MODE_PRIVATE);
+        mPrefsManager = SharedPreferencesManager.getInstance(getApplicationContext());
         gson = new Gson();
     }
 
@@ -78,6 +77,9 @@ public class NotesCreationActivity extends AppCompatActivity {
 
                 time = calendar.getTimeInMillis() / 1000;
                 alertDialog.dismiss();
+                ActionMenuItemView actionCalendar = (ActionMenuItemView) findViewById(R.id.action_pick_date_time);
+                actionCalendar.setIcon(ResourcesCompat.getDrawable(getResources(),
+                        R.mipmap.ic_calendar_on, null));
             }
         });
         alertDialog.setView(dialogView);
@@ -95,12 +97,25 @@ public class NotesCreationActivity extends AppCompatActivity {
             case R.id.action_save:
                 if(isFilledCorrectly()) {
                     saveNote();
-                    setAlarm();
                     finish();
                 }
                 return true;
             case R.id.action_pick_date_time:
                 alertDialog.show();
+                return true;
+            case R.id.action_alarm:
+                ActionMenuItemView actionAlarm = (ActionMenuItemView) findViewById(R.id.action_alarm);
+                if(isAlarm) {
+                    isAlarm = false;
+                    actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
+                            R.mipmap.ic_alarm_off, null));
+                    Toast.makeText(myContext, "Alarm is OFF", Toast.LENGTH_SHORT).show();
+                } else {
+                    isAlarm = true;
+                    actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
+                            R.mipmap.ic_alarm_on, null));
+                    Toast.makeText(myContext, "Alarm is ON", Toast.LENGTH_SHORT).show();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -109,40 +124,28 @@ public class NotesCreationActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        int id = intent.getExtras().getInt("id");
     }
 
-    private void setAlarm() {
-        Intent myIntent = new Intent(NotesCreationActivity.this, MyAlarmReceiver.class);
-        myIntent.putExtra("time", time);
-        myIntent.putExtra("title", name.getText().toString());
-        myIntent.putExtra("description", description.getText().toString());
+    private void setAlarm(Note note) {
+        MyAlarmManager.setAlarm(NotesCreationActivity.this, MyAlarmReceiver.class, note);
+    }
 
-        Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(time * 1000);
-        long t = c.getTimeInMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(NotesCreationActivity.this, (int) time, myIntent, 0);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, t, pendingIntent);
+    private void cancelAlarm(Note note) {
+        MyAlarmManager.cancelAlarm(NotesCreationActivity.this, MyAlarmReceiver.class, note);
     }
 
     private void saveNote() {
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        NotesList nArr = new NotesList();
-        nArr.addAll(getFromPrefs().getAll());
-        Note note = new Note(name.getText().toString(), description.getText().toString(),
-                time, false);
-        nArr.add(note);
-        String json = gson.toJson(nArr);
-        prefsEditor.putString("MyNotes", json);
-        prefsEditor.commit();
+        id = SharedPreferencesManager.getNewNoteID();
+        Note note = new Note(id, name.getText().toString(), description.getText().toString(),
+                time, false, isAlarm);
+        mPrefsManager.saveNote(note);
         intent.putExtra("note", gson.toJson(note));
         setResult(RESULT_OK, intent);
-    }
-
-    private NotesList getFromPrefs() {
-        String json = mPrefs.getString("MyNotes", "");
-        return gson.fromJson(json, NotesList.class);
+        if(isAlarm) {
+            setAlarm(note);
+        } else {
+            cancelAlarm(note);
+        }
     }
 
     private boolean isFilledCorrectly() {

@@ -10,12 +10,4 @@
         android:icon="@mipmap/ic_plus"
         app:showAsAction="always"
         ></item>
-    <item
-        android:id="@+id/action_search"
-        android:orderInCategory="100"
-        android:title="Search"
-        android:icon="@mipmap/ic_search"
-        app:showAsAction="always"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        ></item>
 </menu>

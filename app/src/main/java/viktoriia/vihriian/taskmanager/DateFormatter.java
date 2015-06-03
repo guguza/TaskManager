@@ -42,4 +42,11 @@ public class DateFormatter {
         c.setTimeInMillis(l * 1000);
         return c.getTimeInMillis();
     }
+    public static boolean isActual(long time) {
+        if(time * 1000 > System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
+    }
+
 }

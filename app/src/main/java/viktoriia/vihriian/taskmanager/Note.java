@@ -5,8 +5,11 @@ public class Note {
     private String text;
     private long date;
     private boolean complite;
+    private boolean alarm;
+    private int id;
 
-    public Note(String name, String text, long date, boolean complite) {
+    public Note(int id, String name, String text, long date, boolean complite, boolean alarm) {
+        this.id = id;
         this.setName(name);
         this.setText(text);
         this.setDate(date);
@@ -44,4 +47,10 @@ public class Note {
     public void setComplite(boolean complite) {
         this.complite = complite;
     }
+
+    public int getId() { return id; }
+
+    public boolean isAlarm() { return alarm; }
+
+    public void setAlarm(boolean alarm) { this.alarm = alarm; }
 }

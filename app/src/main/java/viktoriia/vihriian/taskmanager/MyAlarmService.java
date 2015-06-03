@@ -39,6 +39,7 @@ public class MyAlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        int id = intent.getExtras().getInt("id");
         long t = intent.getLongExtra("time", 0L);
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(t * 1000);
@@ -67,7 +68,7 @@ public class MyAlarmService extends Service {
                 .setAutoCancel(true)
                 .getNotification();
 
-        mManager.notify((int) time, notification);
+        mManager.notify(id, notification);
 
         return super.onStartCommand(intent, flags, startId);
     }
