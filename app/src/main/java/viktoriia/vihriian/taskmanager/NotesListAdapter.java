@@ -1,10 +1,6 @@
 package viktoriia.vihriian.taskmanager;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
         import android.view.LayoutInflater;
@@ -13,11 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+
+import viktoriia.vihriian.taskmanager.core_classes.Note;
+import viktoriia.vihriian.taskmanager.core_classes.NotesList;
+import viktoriia.vihriian.taskmanager.tools.DateFormatter;
+import viktoriia.vihriian.taskmanager.tools.MyAlarmManager;
+import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
 
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesListViewHolder> {
 

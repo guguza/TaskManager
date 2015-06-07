@@ -1,4 +1,4 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.core_classes;
 
 public class Note {
     private String name;

@@ -1,6 +1,8 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.core_classes;
 
 import java.util.ArrayList;
+
+import viktoriia.vihriian.taskmanager.core_classes.Note;
 
 public class NotesList {
     private ArrayList<Note> myList;

@@ -1,8 +1,10 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.core_classes;
 
 import android.util.Log;
 
 import java.util.ArrayList;
+
+import viktoriia.vihriian.taskmanager.core_classes.User;
 
 public class UsersList {
     private ArrayList<User> myList;

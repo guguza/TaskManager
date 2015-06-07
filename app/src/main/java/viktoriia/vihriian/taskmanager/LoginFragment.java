@@ -1,7 +1,6 @@
 package viktoriia.vihriian.taskmanager;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import viktoriia.vihriian.taskmanager.core_classes.User;
+import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
 
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
@@ -33,6 +35,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
         myFragmentManager  = MyFragmentManager.getInstance();
 
+        container.setBackgroundColor(getResources().getColor(R.color.accent));
+        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
 
@@ -49,15 +54,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                     User user = User.getInstance();
                     user.setLogin(login.getText().toString());
                     Toast.makeText(getActivity(), "Hello, " + user.getLogin() + "!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), NotesListActivity.class);
-                    startActivity(intent);
+                    navigateTo(new NotesListFragment());
                 } else {
                     Toast.makeText(getActivity(), "Incorrect login or password", Toast.LENGTH_SHORT).show();
                 }
             }
                 break;
             case R.id.butt_register:
-                navigateToRegistration();
+                navigateTo(new RegistrationFragment());
                 break;
         }
     }
@@ -73,7 +77,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         return true;
     }
 
-    private void navigateToRegistration() {
-        myFragmentManager.changeFragment(R.id.fragment_container, new RegistrationFragment());
+    private void navigateTo(Fragment fragment) {
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment);
     }
 }

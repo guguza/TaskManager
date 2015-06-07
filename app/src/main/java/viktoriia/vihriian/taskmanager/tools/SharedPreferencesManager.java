@@ -1,11 +1,14 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.tools;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import viktoriia.vihriian.taskmanager.core_classes.Note;
+import viktoriia.vihriian.taskmanager.core_classes.NotesList;
+import viktoriia.vihriian.taskmanager.core_classes.User;
+import viktoriia.vihriian.taskmanager.core_classes.UsersList;
 
 public class SharedPreferencesManager {
     private static volatile SharedPreferencesManager instance;
@@ -134,6 +137,9 @@ public class SharedPreferencesManager {
     //returns true if the User with such login and password exists
     public static boolean checkUser(String login, String password) {
         UsersList uList = new UsersList();
+        if(getUsersList() == null) {
+            return false;
+        }
         uList.addAll(getUsersList().getAll());
         return uList.isExists(login, password);
     }

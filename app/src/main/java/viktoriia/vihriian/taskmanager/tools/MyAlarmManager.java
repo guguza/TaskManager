@@ -1,4 +1,4 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.tools;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -7,6 +7,8 @@ import android.content.Intent;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import viktoriia.vihriian.taskmanager.core_classes.Note;
 
 public class MyAlarmManager {
 

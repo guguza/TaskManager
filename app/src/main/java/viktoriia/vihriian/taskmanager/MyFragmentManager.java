@@ -36,11 +36,14 @@ public class MyFragmentManager {
     public void changeFragment(int containerID, Fragment newFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(containerID, newFragment);
+        transaction.addToBackStack(null);
         transaction.commit();
         addFragmentToArray(newFragment);
     }
 
-    public void backToPreviousFragment(int containerID) {
+
+//is it needed??
+    /*public void backToPreviousFragment(int containerID) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         int position = fragments.size() - 2;
         if(position < 0) { position = 0; }
@@ -50,8 +53,7 @@ public class MyFragmentManager {
         if(position != 0) {
             removeFragmentFromArray(position);
         }
-        //addFragmentToArray(previousFragment);
-    }
+    }*/
 
     private void addFragmentToArray(Fragment fragment) {
         fragments.add(fragment);
@@ -59,8 +61,4 @@ public class MyFragmentManager {
 
     private void removeFragmentFromArray(int position) { fragments.remove(position); }
 
-    /*@Override
-    public void onBackPressed() {
-
-    }*/
 }

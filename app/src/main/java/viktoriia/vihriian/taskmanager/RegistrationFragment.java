@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import viktoriia.vihriian.taskmanager.core_classes.User;
+import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
+
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener{
 
@@ -32,6 +35,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         confirmPassword = (EditText) view.findViewById(R.id.et_password_confirm);
         registerButton = (Button) view.findViewById(R.id.butt_register);
 
+        container.setBackgroundColor(getResources().getColor(R.color.accent));
+        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
         registerButton.setOnClickListener(this);
         return view;
     }
@@ -42,7 +48,8 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             case R.id.butt_register:
                 //save to prefs
                 if(checkFields()) {
-                    myFragmentManager.backToPreviousFragment(R.id.fragment_container);
+                   // myFragmentManager.backToPreviousFragment(R.id.fragment_container);
+                    myFragmentManager.changeFragment(R.id.fragment_container, new LoginFragment());
                 }
                 break;
         }
@@ -62,7 +69,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             Toast.makeText(getActivity(), "Confirm password again!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        myFragmentManager.backToPreviousFragment(R.id.fragment_container);
         saveUser(fLogin, fPassword);
         return true;
     }
