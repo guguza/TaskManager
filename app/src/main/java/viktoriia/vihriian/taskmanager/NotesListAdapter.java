@@ -3,9 +3,10 @@ package viktoriia.vihriian.taskmanager;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,11 +40,15 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     @Override
     public NotesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         myContext = parent.getContext();
         View v = LayoutInflater.from(myContext).inflate(R.layout.row, parent, false);
+
         NotesListViewHolder holder = new NotesListViewHolder(v);
+
         mPrefsManager = SharedPreferencesManager.getInstance(myContext);
         gson = new Gson();
+
         return holder;
     }
 
@@ -55,9 +60,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.date.setText(DateFormatter
                 .getStringFromFormattedLong(notes.get(pos).getDate()));
         holder.checkBox.setChecked(notes.get(pos).isComplite());
-        if(notes.get(pos).isAlarm() && DateFormatter.isActual(notes.get(pos).getDate())) {
+        if(notes.get(pos).isAlarm() && DateFormatter
+                .isActual(notes.get(pos).getDate())) {
+            Log.e("AZAZZAZAZA", "" + pos + notes.get(pos).isAlarm());
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
         } else {
+            Log.e("AZAZZAZAZA", "" + pos + "----" + notes.get(pos).isAlarm());
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
         }
     }
@@ -67,7 +75,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         return notes.size();
     }
 
-    public class NotesListViewHolder extends RecyclerView.ViewHolder{
+    public class NotesListViewHolder extends RecyclerView.ViewHolder {
+
         CardView cv;
         TextView name;
         TextView description;
@@ -78,20 +87,15 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         public NotesListViewHolder(View v) {
             super(v);
             cv = (CardView) v.findViewById(R.id.cv);
-            name = (TextView)v.findViewById(R.id.tv_name);
-            description = (TextView)v.findViewById(R.id.tv_description);
-            date = (TextView)v.findViewById(R.id.tv_date);
+            name = (TextView) v.findViewById(R.id.tv_name);
+            description = (TextView) v.findViewById(R.id.tv_description);
+            date = (TextView) v.findViewById(R.id.tv_date);
             checkBox = (CheckBox) v.findViewById(R.id.check_box);
             alarm = (ImageView) v.findViewById(R.id.iv_alarm);
         }
     }
 
-    public void add(Note note) {
-        notes.add(note);
-        this.notifyDataSetChanged();
-    }
-
-    public void removeAt(int position) {
+   public void removeAt(int position) {
         cancelAlarm(position);
         notes.remove(position);
         this.notifyItemRemoved(position);

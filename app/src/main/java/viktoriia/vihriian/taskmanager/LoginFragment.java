@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import viktoriia.vihriian.taskmanager.core_classes.User;
+import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
 import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
 
 public class LoginFragment extends Fragment implements View.OnClickListener{
@@ -25,18 +26,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        mPrefs = SharedPreferencesManager.getInstance(getActivity());
+        setContainerParams(container);
 
         login = (EditText) view.findViewById(R.id.et_login);
         password = (EditText) view.findViewById(R.id.et_password);
         loginButton = (Button) view.findViewById(R.id.butt_login);
         registerButton = (Button) view.findViewById(R.id.butt_register);
 
+        mPrefs = SharedPreferencesManager.getInstance(getActivity());
         myFragmentManager  = MyFragmentManager.getInstance();
-
-        container.setBackgroundColor(getResources().getColor(R.color.accent));
-        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         loginButton.setOnClickListener(this);
         registerButton.setOnClickListener(this);
@@ -48,9 +48,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.butt_login:
-                //check user
+                //checking if user exists
             if(checkFields()) {
                 if(mPrefs.checkUser(login.getText().toString(), password.getText().toString())) {
+                    // user authorization
                     User user = User.getInstance();
                     user.setLogin(login.getText().toString());
                     Toast.makeText(getActivity(), "Hello, " + user.getLogin() + "!", Toast.LENGTH_SHORT).show();
@@ -66,6 +67,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    private void setContainerParams(ViewGroup container) {
+        container.setBackgroundColor(getResources().getColor(R.color.accent));
+        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    // Returns FALSE if there are empty fields
     private boolean checkFields() {
         String fLogin = login.getText().toString();
         String fPassword = password.getText().toString();
@@ -77,6 +84,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         return true;
     }
 
+    // Changes current fragment to necessary one
     private void navigateTo(Fragment fragment) {
         myFragmentManager.changeFragment(R.id.fragment_container, fragment);
     }

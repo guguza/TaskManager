@@ -26,12 +26,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import viktoriia.vihriian.taskmanager.core_classes.Note;
+import viktoriia.vihriian.taskmanager.tools.DateFormatter;
 import viktoriia.vihriian.taskmanager.tools.MyAlarmManager;
+import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
 import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
 
-/**
- * Created by Администратор on 05.06.2015.
- */
+
 public class NotesCreationFragment extends Fragment {
 
     public Toolbar toolbar;
@@ -54,30 +54,20 @@ public class NotesCreationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_notes_creation, container, false);
+        setContainerParams(container);
+        setToolbar(view);
 
-        container.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        container.setBackgroundColor(getResources().getColor(R.color.background_material_light));
-
-        toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-        setHasOptionsMenu(true);
-
-        myFragmentManager  = MyFragmentManager.getInstance();
         name = (EditText) view.findViewById(R.id.et_name);
         description = (EditText) view.findViewById(R.id.et_description);
 
-        toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
-        toolbar.setTitle("Add task");
-
         myContext = getActivity();
-
         mPrefsManager = SharedPreferencesManager.getInstance(myContext.getApplicationContext());
+        myFragmentManager  = MyFragmentManager.getInstance();
         gson = new Gson();
 
         return view;
-
     }
 
     @Override
@@ -92,9 +82,47 @@ public class NotesCreationFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getActivity().getMenuInflater().inflate(R.menu.menu_notes_creation, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        getActivity().getMenuInflater().inflate(R.menu.menu_notes_creation, menu);
+
+        setDialogWithDateAndTimePicker();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_save:
+                if(isFilledCorrectly()) {
+                    saveNote();
+                    navigateTo(new NotesListFragment());
+                }
+                return true;
+            case R.id.action_pick_date_time:
+                alertDialog.show();
+                return true;
+            case R.id.action_alarm:
+                defineAlarmValue();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setContainerParams(ViewGroup container) {
+        container.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+        container.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+    }
+
+    private void setToolbar(View view) {
+        toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
+        toolbar.setTitle("Add task");
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+    }
+
+    private void setDialogWithDateAndTimePicker() {
+
         final View dialogView = View.inflate(myContext, R.layout.date_time_picker, null);
         alertDialog = new AlertDialog.Builder(myContext).create();
 
@@ -102,6 +130,7 @@ public class NotesCreationFragment extends Fragment {
         final TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
 
+        //when user clicks the SET-button
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,43 +142,47 @@ public class NotesCreationFragment extends Fragment {
                         timePicker.getCurrentMinute());
 
                 time = calendar.getTimeInMillis() / 1000;
-                alertDialog.dismiss();
-                ActionMenuItemView actionCalendar = (ActionMenuItemView) getView().findViewById(R.id.action_pick_date_time);
-                actionCalendar.setIcon(ResourcesCompat.getDrawable(getResources(),
-                        R.mipmap.ic_calendar_on, null));
+                if (DateFormatter.isActual(time)) {
+                    alertDialog.dismiss();
+                    ActionMenuItemView actionCalendar = (ActionMenuItemView) getView().findViewById(R.id.action_pick_date_time);
+                    actionCalendar.setIcon(ResourcesCompat.getDrawable(getResources(),
+                            R.mipmap.ic_calendar_on, null));
+                } else {
+                    Toast.makeText(myContext, "Incorrect date!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         alertDialog.setView(dialogView);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.action_save:
-                if(isFilledCorrectly()) {
-                    saveNote();
-                    myFragmentManager.changeFragment(R.id.fragment_container, new NotesListFragment());
-                }
-                return true;
-            case R.id.action_pick_date_time:
-                alertDialog.show();
-                return true;
-            case R.id.action_alarm:
-                ActionMenuItemView actionAlarm = (ActionMenuItemView) getView().findViewById(R.id.action_alarm);
-                if(isAlarm) {
-                    isAlarm = false;
-                    actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
-                            R.mipmap.ic_alarm_off, null));
-                    Toast.makeText(myContext, "Alarm is OFF", Toast.LENGTH_SHORT).show();
-                } else {
-                    isAlarm = true;
-                    actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
-                            R.mipmap.ic_alarm_on, null));
-                    Toast.makeText(myContext, "Alarm is ON", Toast.LENGTH_SHORT).show();
-                }
-                return true;
+    //switches on/off notification and changes alarm-drawable
+    private void defineAlarmValue() {
+        ActionMenuItemView actionAlarm = (ActionMenuItemView) getView().findViewById(R.id.action_alarm);
+        if(isAlarm) {
+            isAlarm = false;
+            actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.mipmap.ic_alarm_off, null));
+            Toast.makeText(myContext, "Alarm is OFF", Toast.LENGTH_SHORT).show();
+        } else {
+            isAlarm = true;
+            actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.mipmap.ic_alarm_on, null));
+            Toast.makeText(myContext, "Alarm is ON", Toast.LENGTH_SHORT).show();
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    //saves note in the preferences and starts the AlarmManager
+    private void saveNote() {
+        id = mPrefsManager.getNewNoteID();
+        Note note = new Note(id, name.getText().toString(), description.getText().toString(),
+                time, false, isAlarm);
+        mPrefsManager.saveNote(note);
+        if(isAlarm) {
+            setAlarm(note);
+        } else {
+            cancelAlarm(note);
+        }
     }
 
     private void setAlarm(Note note) {
@@ -158,20 +191,6 @@ public class NotesCreationFragment extends Fragment {
 
     private void cancelAlarm(Note note) {
         MyAlarmManager.cancelAlarm(myContext, MyAlarmReceiver.class, note);
-    }
-
-    private void saveNote() {
-        id = SharedPreferencesManager.getNewNoteID();
-        Note note = new Note(id, name.getText().toString(), description.getText().toString(),
-                time, false, isAlarm);
-        mPrefsManager.saveNote(note);
-        /*intent.putExtra("note", gson.toJson(note));
-        setResult(RESULT_OK, intent);*/
-        if(isAlarm) {
-            setAlarm(note);
-        } else {
-            cancelAlarm(note);
-        }
     }
 
     private boolean isFilledCorrectly() {
@@ -190,4 +209,8 @@ public class NotesCreationFragment extends Fragment {
         return false;
     }
 
+    // Changes current fragment to the necessary one
+    private void navigateTo(Fragment fragment) {
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment);
+    }
 }

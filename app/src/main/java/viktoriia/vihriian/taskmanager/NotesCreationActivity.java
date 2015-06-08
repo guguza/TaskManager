@@ -137,7 +137,7 @@ public class NotesCreationActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
-        id = SharedPreferencesManager.getNewNoteID();
+        id = mPrefsManager.getNewNoteID();
         Note note = new Note(id, name.getText().toString(), description.getText().toString(),
                 time, false, isAlarm);
         mPrefsManager.saveNote(note);

@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import viktoriia.vihriian.taskmanager.core_classes.User;
+import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
 import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
 
 
@@ -27,23 +28,25 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
+
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
-        mPrefs = SharedPreferencesManager.getInstance(getActivity());
+        setContainerParams(container);
 
         login = (EditText) view.findViewById(R.id.et_login);
         password = (EditText) view.findViewById(R.id.et_password);
         confirmPassword = (EditText) view.findViewById(R.id.et_password_confirm);
         registerButton = (Button) view.findViewById(R.id.butt_register);
 
-        container.setBackgroundColor(getResources().getColor(R.color.accent));
-        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mPrefs = SharedPreferencesManager.getInstance(getActivity());
 
         registerButton.setOnClickListener(this);
+
         return view;
     }
 
     @Override
     public void onClick(View view) {
+
         switch(view.getId()) {
             case R.id.butt_register:
                 //save to prefs
@@ -55,7 +58,13 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    private void setContainerParams(ViewGroup container) {
+        container.setBackgroundColor(getResources().getColor(R.color.accent));
+        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
     private boolean checkFields() {
+
         String fLogin = login.getText().toString();
         String fPassword = password.getText().toString();
         String fPassword2 = confirmPassword.getText().toString();

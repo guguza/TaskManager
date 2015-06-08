@@ -14,6 +14,7 @@ public class Note {
         this.setText(text);
         this.setDate(date);
         this.setComplite(complite);
+        this.setAlarm(alarm);
     }
 
     public String getName() {
