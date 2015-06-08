@@ -1,4 +1,4 @@
-package viktoriia.vihriian.taskmanager;
+package viktoriia.vihriian.taskmanager.tools;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
