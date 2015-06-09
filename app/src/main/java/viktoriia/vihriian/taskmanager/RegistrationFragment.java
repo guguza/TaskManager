@@ -71,11 +71,11 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
         if(fLogin.equals("") || fPassword.equals("")
                 || fPassword2.equals("")) {
-            Toast.makeText(getActivity(), "Fill in all the fields!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.empty_fields_error, Toast.LENGTH_SHORT).show();
             return false;
         }
         if(!fPassword.equals(fPassword2)) {
-            Toast.makeText(getActivity(), "Confirm password again!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.pass_confirmation_error, Toast.LENGTH_SHORT).show();
             return false;
         }
         saveUser(fLogin, fPassword);
@@ -88,9 +88,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         user.setPassword(uPassword);
         if(mPrefs.checkUser(uLogin)) {
             mPrefs.saveUser(user);
-            Toast.makeText(getActivity(), "Registration was successful!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.success_registration, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getActivity(), "User with such name already exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.username_error, Toast.LENGTH_SHORT).show();
         }
     }
 }

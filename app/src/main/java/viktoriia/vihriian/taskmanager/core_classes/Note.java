@@ -1,6 +1,12 @@
 package viktoriia.vihriian.taskmanager.core_classes;
 
 public class Note {
+
+    public static final String ID = "id";
+    public static final String DATE = "time";
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
+
     private String name;
     private String text;
     private long date;

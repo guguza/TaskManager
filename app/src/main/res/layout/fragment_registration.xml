@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Login"
+        android:hint="@string/login"
         android:textColorHint="@color/light_grey"
         android:ems="10"
         android:id="@+id/et_login" />
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Password"
+        android:hint="@string/password"
         android:textColorHint="@color/light_grey"
         android:ems="10"
         android:id="@+id/et_password" />
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Confirm password"
+        android:hint="@string/password2"
         android:textColorHint="@color/light_grey"
         android:ems="10"
         android:id="@+id/et_password_confirm" />
@@ -41,7 +41,7 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Yeah!"
+        android:text="@string/confirm_button"
         android:id="@+id/butt_register"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

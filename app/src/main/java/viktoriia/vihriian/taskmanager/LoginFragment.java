@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                     Toast.makeText(getActivity(), "Hello, " + user.getLogin() + "!", Toast.LENGTH_SHORT).show();
                     navigateTo(new NotesListFragment());
                 } else {
-                    Toast.makeText(getActivity(), "Incorrect login or password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.login_or_pass_error, Toast.LENGTH_SHORT).show();
                 }
             }
                 break;
@@ -78,7 +78,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         String fPassword = password.getText().toString();
 
         if(fLogin.equals("") || fPassword.equals("")) {
-            Toast.makeText(getActivity(), "Fill in all the fields!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.empty_fields_error, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

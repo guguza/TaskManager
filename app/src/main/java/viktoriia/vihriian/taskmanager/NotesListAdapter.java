@@ -62,10 +62,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.checkBox.setChecked(notes.get(pos).isComplite());
         if(notes.get(pos).isAlarm() && DateFormatManager
                 .isActual(notes.get(pos).getDate())) {
-            Log.e("AZAZZAZAZA", "" + pos + notes.get(pos).isAlarm());
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
         } else {
-            Log.e("AZAZZAZAZA", "" + pos + "----" + notes.get(pos).isAlarm());
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
         }
     }

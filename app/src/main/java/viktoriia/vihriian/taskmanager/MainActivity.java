@@ -37,16 +37,16 @@ public class MainActivity extends AppCompatActivity {
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Close app")
-                .setMessage("Are u sure?")
+        builder.setTitle(R.string.title_exit)
+                .setMessage(R.string.text_exit)
                 .setIcon(R.mipmap.ic_exit)
                 .setCancelable(false)
-                .setPositiveButton("Yep",new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.confirm_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.declain_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }

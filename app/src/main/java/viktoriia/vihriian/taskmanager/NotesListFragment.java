@@ -107,7 +107,7 @@ public class NotesListFragment extends Fragment {
     }
     private void setToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
-        toolbar.setTitle("Your tasks");
+        toolbar.setTitle(R.string.list);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
@@ -117,7 +117,7 @@ public class NotesListFragment extends Fragment {
     //fills the ArrayList with values from *DB* - SharedPreferences
     public void fillNotesFromPrefs() {
         if(mPrefsManager.getNotesList() == null) {
-            showInfo("Notes are not found!");
+            showInfo(getResources().getString(R.string.empty_note_list_error));
         } else {
             notesList.addAll(mPrefsManager.getNotesList().getAll());
         }
@@ -188,14 +188,14 @@ public class NotesListFragment extends Fragment {
         if (DateFormatManager.isActual(adapter.notes.get(position).getDate())) {
 
             if (adapter.notes.get(position).isAlarm()) {
-                showInfo("Alarm is OFF!");
+                showInfo(getResources().getString(R.string.off_alarm));
                 adapter.notes.get(position).setAlarm(false);
                 alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
                 MyAlarmManager.cancelAlarm(myContext,
                         MyAlarmReceiver.class, adapter.notes.get(position));
 
             } else {
-                showInfo("Alarm is ON!");
+                showInfo(getResources().getString(R.string.on_alarm));
                 adapter.notes.get(position).setAlarm(true);
                 alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
                 MyAlarmManager.setAlarm(myContext,
@@ -209,7 +209,7 @@ public class NotesListFragment extends Fragment {
                 MyAlarmManager.cancelAlarm(myContext,
                         MyAlarmReceiver.class, adapter.notes.get(position));
             }
-            showInfo("Task is not actual anymore!");
+            showInfo(getResources().getString(R.string.task_actuality_error));
         }
         adapter.updateNotes();
     }

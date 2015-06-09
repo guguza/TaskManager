@@ -114,7 +114,7 @@ public class NotesCreationFragment extends Fragment {
 
     private void setToolbar(View view) {
         toolbar = (Toolbar) view.findViewById(R.id.tool_bar);
-        toolbar.setTitle("Add task");
+        toolbar.setTitle(R.string.add);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
@@ -148,7 +148,7 @@ public class NotesCreationFragment extends Fragment {
                     actionCalendar.setIcon(ResourcesCompat.getDrawable(getResources(),
                             R.mipmap.ic_calendar_on, null));
                 } else {
-                    Toast.makeText(myContext, "Incorrect date!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(myContext, R.string.date_error, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -163,12 +163,12 @@ public class NotesCreationFragment extends Fragment {
             isAlarm = false;
             actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
                     R.mipmap.ic_alarm_off, null));
-            Toast.makeText(myContext, "Alarm is OFF", Toast.LENGTH_SHORT).show();
+            Toast.makeText(myContext, R.string.off_alarm, Toast.LENGTH_SHORT).show();
         } else {
             isAlarm = true;
             actionAlarm.setIcon(ResourcesCompat.getDrawable(getResources(),
                     R.mipmap.ic_alarm_on, null));
-            Toast.makeText(myContext, "Alarm is ON", Toast.LENGTH_SHORT).show();
+            Toast.makeText(myContext, R.string.on_alarm, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -196,11 +196,11 @@ public class NotesCreationFragment extends Fragment {
     private boolean isFilledCorrectly() {
         String message = null;
         if(name.getText().toString().equals("")) {
-            message = "Name the note!";
+            message = getResources().getString(R.string.empty_name_error);
         } else if(description.getText().toString().equals("")){
-            message = "Describe the note!";
+            message = getResources().getString(R.string.empty_description_error);
         } else if(time == 0) {
-            message = "Pick up date and time!";
+            message = getResources().getString(R.string.empty_date_error);;
         }
         if(message == null) {
             return true;

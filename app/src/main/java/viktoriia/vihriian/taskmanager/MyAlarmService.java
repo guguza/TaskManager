@@ -12,6 +12,8 @@ import android.os.IBinder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import viktoriia.vihriian.taskmanager.core_classes.Note;
+
 public class MyAlarmService extends Service {
     private NotificationManager mManager;
     private String title;
@@ -38,14 +40,14 @@ public class MyAlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        int id = intent.getExtras().getInt("id");
-        long t = intent.getLongExtra("time", 0L);
+        int id = intent.getExtras().getInt(Note.ID);
+        long t = intent.getLongExtra(Note.DATE, 0L);
         Calendar c = new GregorianCalendar();
         c.setTimeInMillis(t * 1000);
         time = c.getTimeInMillis();
 
-        title = intent.getStringExtra("title");
-        text = intent.getStringExtra("description");
+        title = intent.getStringExtra(Note.TITLE);
+        text = intent.getStringExtra(Note.DESCRIPTION);
 
         mManager = (NotificationManager) this.getApplicationContext().
                 getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
@@ -75,7 +77,6 @@ public class MyAlarmService extends Service {
     @Override
     public void onDestroy()
     {
-        // TODO Auto-generated method stub
         super.onDestroy();
     }
 }

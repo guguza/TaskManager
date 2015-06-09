@@ -14,7 +14,7 @@
         android:id="@+id/et_name"
         android:textSize="20sp"
         android:textColorHint="@color/light_grey"
-        android:hint="Название"/>
+        android:hint="@string/name_hint"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -23,6 +23,6 @@
         android:textSize="16sp"
         android:id="@+id/et_description"
         android:textColorHint="@color/light_grey"
-        android:hint="Текст"
+        android:hint="@string/description_hint"
         android:gravity="top"/>
 </LinearLayout>
