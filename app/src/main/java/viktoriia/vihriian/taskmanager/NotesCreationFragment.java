@@ -26,10 +26,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import viktoriia.vihriian.taskmanager.core_classes.Note;
-import viktoriia.vihriian.taskmanager.tools.DateFormatter;
-import viktoriia.vihriian.taskmanager.tools.MyAlarmManager;
-import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
-import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
+import viktoriia.vihriian.taskmanager.managers.DateFormatManager;
+import viktoriia.vihriian.taskmanager.managers.MyAlarmManager;
+import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
+import viktoriia.vihriian.taskmanager.managers.SharedPreferencesManager;
 
 
 public class NotesCreationFragment extends Fragment {
@@ -142,7 +142,7 @@ public class NotesCreationFragment extends Fragment {
                         timePicker.getCurrentMinute());
 
                 time = calendar.getTimeInMillis() / 1000;
-                if (DateFormatter.isActual(time)) {
+                if (DateFormatManager.isActual(time)) {
                     alertDialog.dismiss();
                     ActionMenuItemView actionCalendar = (ActionMenuItemView) getView().findViewById(R.id.action_pick_date_time);
                     actionCalendar.setIcon(ResourcesCompat.getDrawable(getResources(),

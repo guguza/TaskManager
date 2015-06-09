@@ -1,4 +1,4 @@
-package viktoriia.vihriian.taskmanager.tools;
+package viktoriia.vihriian.taskmanager.managers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

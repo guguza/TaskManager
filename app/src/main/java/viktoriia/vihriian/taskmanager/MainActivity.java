@@ -1,9 +1,11 @@
 package viktoriia.vihriian.taskmanager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
+import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,9 +28,31 @@ public class MainActivity extends AppCompatActivity {
         if (getFragmentManager().getBackStackEntryCount() > 1 ){
             getFragmentManager().popBackStack();
         } else if(getFragmentManager().getBackStackEntryCount() == 1 ) {
-            finish();
+            showAlertDialog();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Close app")
+                .setMessage("Are u sure?")
+                .setIcon(R.mipmap.ic_exit)
+                .setCancelable(false)
+                .setPositiveButton("Yep",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

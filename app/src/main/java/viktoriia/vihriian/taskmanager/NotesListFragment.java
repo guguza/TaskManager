@@ -27,10 +27,10 @@ import com.hudomju.swipe.adapter.RecyclerViewAdapter;
 import java.util.ArrayList;
 
 import viktoriia.vihriian.taskmanager.core_classes.Note;
-import viktoriia.vihriian.taskmanager.tools.DateFormatter;
-import viktoriia.vihriian.taskmanager.tools.MyAlarmManager;
-import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
-import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
+import viktoriia.vihriian.taskmanager.managers.DateFormatManager;
+import viktoriia.vihriian.taskmanager.managers.MyAlarmManager;
+import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
+import viktoriia.vihriian.taskmanager.managers.SharedPreferencesManager;
 
 
 public class NotesListFragment extends Fragment {
@@ -185,7 +185,7 @@ public class NotesListFragment extends Fragment {
     private void setAlarm(View view, int position) {
         ImageView alarm = (ImageView) view.findViewById(R.id.iv_alarm);
 
-        if (DateFormatter.isActual(adapter.notes.get(position).getDate())) {
+        if (DateFormatManager.isActual(adapter.notes.get(position).getDate())) {
 
             if (adapter.notes.get(position).isAlarm()) {
                 showInfo("Alarm is OFF!");

@@ -1,11 +1,10 @@
-package viktoriia.vihriian.taskmanager.tools;
+package viktoriia.vihriian.taskmanager.managers;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DateFormatter {
+public class DateFormatManager {
 
     public static final String DATE_FORMAT_FOR_HUMANS = "EEEE, d MMMM, yyyy ' ' HH:mm";
     private static final SimpleDateFormat dateFormatForHumans = new

@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 import viktoriia.vihriian.taskmanager.core_classes.Note;
 import viktoriia.vihriian.taskmanager.core_classes.NotesList;
-import viktoriia.vihriian.taskmanager.tools.DateFormatter;
-import viktoriia.vihriian.taskmanager.tools.MyAlarmManager;
-import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
+import viktoriia.vihriian.taskmanager.managers.DateFormatManager;
+import viktoriia.vihriian.taskmanager.managers.MyAlarmManager;
+import viktoriia.vihriian.taskmanager.managers.SharedPreferencesManager;
 
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesListViewHolder> {
 
@@ -57,10 +57,10 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
         holder.name.setText(notes.get(pos).getName());
         holder.description.setText(notes.get(pos).getText());
-        holder.date.setText(DateFormatter
+        holder.date.setText(DateFormatManager
                 .getStringFromFormattedLong(notes.get(pos).getDate()));
         holder.checkBox.setChecked(notes.get(pos).isComplite());
-        if(notes.get(pos).isAlarm() && DateFormatter
+        if(notes.get(pos).isAlarm() && DateFormatManager
                 .isActual(notes.get(pos).getDate())) {
             Log.e("AZAZZAZAZA", "" + pos + notes.get(pos).isAlarm());
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);

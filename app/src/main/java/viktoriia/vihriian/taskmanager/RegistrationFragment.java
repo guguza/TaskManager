@@ -10,8 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import viktoriia.vihriian.taskmanager.core_classes.User;
-import viktoriia.vihriian.taskmanager.tools.MyFragmentManager;
-import viktoriia.vihriian.taskmanager.tools.SharedPreferencesManager;
+import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
+import viktoriia.vihriian.taskmanager.managers.SharedPreferencesManager;
 
 
 public class RegistrationFragment extends Fragment implements View.OnClickListener{

@@ -49,7 +49,7 @@ public class MyAlarmService extends Service {
 
         mManager = (NotificationManager) this.getApplicationContext().
                 getSystemService(this.getApplicationContext().NOTIFICATION_SERVICE);
-        Intent mIntent = new Intent(this.getApplicationContext(), NotesCreationActivity.class);
+        Intent mIntent = new Intent(this.getApplicationContext(), MainActivity.class);
 
         mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
