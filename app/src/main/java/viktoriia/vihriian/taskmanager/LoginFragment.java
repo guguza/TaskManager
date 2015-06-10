@@ -55,14 +55,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                     User user = User.getInstance();
                     user.setLogin(login.getText().toString());
                     Toast.makeText(getActivity(), "Hello, " + user.getLogin() + "!", Toast.LENGTH_SHORT).show();
-                    navigateTo(new NotesListFragment());
+                    navigateTo(new NotesListFragment(), "NotesList");
                 } else {
                     Toast.makeText(getActivity(), R.string.login_or_pass_error, Toast.LENGTH_SHORT).show();
                 }
             }
                 break;
             case R.id.butt_register:
-                navigateTo(new RegistrationFragment());
+                navigateTo(new RegistrationFragment(), "Registration");
                 break;
         }
     }
@@ -85,7 +85,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     // Changes current fragment to necessary one
-    private void navigateTo(Fragment fragment) {
-        myFragmentManager.changeFragment(R.id.fragment_container, fragment);
+    private void navigateTo(Fragment fragment, String tag) {
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment, true);
     }
 }

@@ -211,6 +211,6 @@ public class NotesCreationFragment extends Fragment {
 
     // Changes current fragment to the necessary one
     private void navigateTo(Fragment fragment) {
-        myFragmentManager.changeFragment(R.id.fragment_container, fragment);
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment, true);
     }
 }

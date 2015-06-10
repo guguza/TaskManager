@@ -125,7 +125,7 @@ public class NotesListFragment extends Fragment {
 
     // Changes current fragment to necessary one
     private void navigateTo(Fragment fragment) {
-        myFragmentManager.changeFragment(R.id.fragment_container, fragment);
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment, true);
     }
 
     //sets layoutmanager and listeners for the recycler view

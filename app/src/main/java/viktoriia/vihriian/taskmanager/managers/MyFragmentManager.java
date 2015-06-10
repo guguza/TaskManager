@@ -33,32 +33,40 @@ public class MyFragmentManager {
         fragments = new ArrayList<>();
     }
 
-    public void changeFragment(int containerID, Fragment newFragment) {
+    public void changeFragment(int containerID, Fragment newFragment, boolean isAdded/*, String tag*/) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(containerID, newFragment);
-        transaction.addToBackStack(null);
         transaction.commit();
-        addFragmentToArray(newFragment);
+        if(isAdded) {
+            addFragmentToArray(newFragment);
+        }
     }
 
+    public void backToPreviousFragment(int containerID) {
 
-//is it needed??
-    /*public void backToPreviousFragment(int containerID) {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        int position = fragments.size() - 2;
+        int position = fragments.size() - 1;
+        removeFragmentFromArray(position);
+
         if(position < 0) { position = 0; }
-        Fragment previousFragment = fragments.get(position);
-        transaction.replace(containerID, previousFragment);
-        transaction.commit();
-        if(position != 0) {
-            removeFragmentFromArray(position);
-        }
-    }*/
 
-    private void addFragmentToArray(Fragment fragment) {
+        if(position != 0) {
+            Fragment previousFragment = fragments.get(position - 1);
+                changeFragment(containerID, previousFragment, false);
+            }
+    }
+
+    public Fragment getLast() {
+        return fragments.get(fragments.size() - 1);
+    }
+
+    public void addFragmentToArray(Fragment fragment) {
         fragments.add(fragment);
     }
 
-    private void removeFragmentFromArray(int position) { fragments.remove(position); }
+    private Fragment removeFragmentFromArray(int position) {
+        Fragment currentFragment = fragments.get(position);
+        fragments.remove(position);
+        return currentFragment;
+    }
 
 }

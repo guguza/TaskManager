@@ -52,7 +52,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
                 //save to prefs
                 if(checkFields()) {
                    // myFragmentManager.backToPreviousFragment(R.id.fragment_container);
-                    myFragmentManager.changeFragment(R.id.fragment_container, new LoginFragment());
+                    myFragmentManager.changeFragment(R.id.fragment_container, new LoginFragment(), true);
                 }
                 break;
         }
