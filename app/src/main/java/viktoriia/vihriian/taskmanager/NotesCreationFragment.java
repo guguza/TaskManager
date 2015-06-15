@@ -3,6 +3,8 @@ package viktoriia.vihriian.taskmanager;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
@@ -17,10 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -30,9 +36,10 @@ import viktoriia.vihriian.taskmanager.managers.DateFormatManager;
 import viktoriia.vihriian.taskmanager.managers.MyAlarmManager;
 import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
 import viktoriia.vihriian.taskmanager.managers.SharedPreferencesManager;
+import static android.content.Intent.ACTION_PICK;
+        import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-
-public class NotesCreationFragment extends Fragment {
+public class NotesCreationFragment extends Fragment implements View.OnClickListener{
 
     public Toolbar toolbar;
     public Context myContext;
@@ -45,6 +52,11 @@ public class NotesCreationFragment extends Fragment {
     private int id;
     private boolean isAlarm;
     private MyFragmentManager myFragmentManager;
+    private String image;
+    ImageView imageView;
+    private ViewAnimator animator;
+
+    private static final int GALLERY_REQUEST = 9391;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,12 +73,15 @@ public class NotesCreationFragment extends Fragment {
 
         name = (EditText) view.findViewById(R.id.et_name);
         description = (EditText) view.findViewById(R.id.et_description);
+        animator = (ViewAnimator) view.findViewById(R.id.animator);
+        imageView = (ImageView) view.findViewById(R.id.image);
 
         myContext = getActivity();
         mPrefsManager = SharedPreferencesManager.getInstance(myContext.getApplicationContext());
         myFragmentManager  = MyFragmentManager.getInstance();
         gson = new Gson();
 
+        imageView.setOnClickListener(this);
         return view;
     }
 
@@ -78,6 +93,12 @@ public class NotesCreationFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -107,6 +128,30 @@ public class NotesCreationFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GALLERY_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            image = data.getData().toString();
+            loadImage();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void loadImage() {
+        // Index 1 is the progress bar. Show it while we're loading the image.
+        animator.setDisplayedChild(1);
+
+        Picasso.with(myContext)
+                .load(image)
+                .into(imageView, new Callback.EmptyCallback() {
+            @Override public void onSuccess() {
+                // Index 0 is the image view.
+                animator.setDisplayedChild(0);
+            }
+        });
+    }
+
     private void setContainerParams(ViewGroup container) {
         container.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
         container.setBackgroundColor(getResources().getColor(R.color.background_material_light));
@@ -119,6 +164,11 @@ public class NotesCreationFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
+    }
+
+    private void openGallery() {
+        Intent gallery = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, GALLERY_REQUEST);
     }
 
     private void setDialogWithDateAndTimePicker() {
@@ -176,7 +226,7 @@ public class NotesCreationFragment extends Fragment {
     private void saveNote() {
         id = mPrefsManager.getNewNoteID();
         Note note = new Note(id, name.getText().toString(), description.getText().toString(),
-                time, false, isAlarm);
+                time, false, isAlarm, image);
         mPrefsManager.saveNote(note);
         if(isAlarm) {
             setAlarm(note);
@@ -211,6 +261,15 @@ public class NotesCreationFragment extends Fragment {
 
     // Changes current fragment to the necessary one
     private void navigateTo(Fragment fragment) {
-        myFragmentManager.changeFragment(R.id.fragment_container, fragment, true);
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment, false);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.image:
+                openGallery();
+                break;
+        }
     }
 }

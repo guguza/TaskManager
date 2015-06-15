@@ -33,7 +33,7 @@ public class MyFragmentManager {
         fragments = new ArrayList<>();
     }
 
-    public void changeFragment(int containerID, Fragment newFragment, boolean isAdded/*, String tag*/) {
+    public void changeFragment(int containerID, Fragment newFragment, boolean isAdded) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(containerID, newFragment);
         transaction.commit();
@@ -53,11 +53,22 @@ public class MyFragmentManager {
             Fragment previousFragment = fragments.get(position - 1);
                 changeFragment(containerID, previousFragment, false);
             }
+        /*Fragment prePreviousFragment = getPreLast();
+        if(prePreviousFragment != null) {
+            if(getLast().getClass().getName().equals(prePreviousFragment.getClass().getName())) {
+                removeFragmentFromArray(position - 2);
+            }
+        }*/
+
     }
 
     public Fragment getLast() {
         return fragments.get(fragments.size() - 1);
     }
+
+    /*public Fragment getPreLast() {
+        return (fragments.size() >= 2)? fragments.get(fragments.size() - 2): null;
+    }*/
 
     public void addFragmentToArray(Fragment fragment) {
         fragments.add(fragment);

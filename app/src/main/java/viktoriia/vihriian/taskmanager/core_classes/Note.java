@@ -13,14 +13,16 @@ public class Note {
     private boolean complite;
     private boolean alarm;
     private int id;
+    private String image;
 
-    public Note(int id, String name, String text, long date, boolean complite, boolean alarm) {
+    public Note(int id, String name, String text, long date, boolean complite, boolean alarm, String image) {
         this.id = id;
         this.setName(name);
         this.setText(text);
         this.setDate(date);
         this.setComplite(complite);
         this.setAlarm(alarm);
+        this.setImage(image);
     }
 
     public String getName() {
@@ -60,4 +62,12 @@ public class Note {
     public boolean isAlarm() { return alarm; }
 
     public void setAlarm(boolean alarm) { this.alarm = alarm; }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

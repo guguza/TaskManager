@@ -23,6 +23,7 @@ import com.hudomju.swipe.OnItemClickListener;
 import com.hudomju.swipe.SwipeToDismissTouchListener;
 import com.hudomju.swipe.SwipeableItemClickListener;
 import com.hudomju.swipe.adapter.RecyclerViewAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -125,7 +126,7 @@ public class NotesListFragment extends Fragment {
 
     // Changes current fragment to necessary one
     private void navigateTo(Fragment fragment) {
-        myFragmentManager.changeFragment(R.id.fragment_container, fragment, true);
+        myFragmentManager.changeFragment(R.id.fragment_container, fragment, false);
     }
 
     //sets layoutmanager and listeners for the recycler view

@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.squareup.picasso.Picasso;
+
 import viktoriia.vihriian.taskmanager.managers.MyFragmentManager;
 
 

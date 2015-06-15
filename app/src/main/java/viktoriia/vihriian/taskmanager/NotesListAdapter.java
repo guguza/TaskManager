@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -60,11 +62,19 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.date.setText(DateFormatManager
                 .getStringFromFormattedLong(notes.get(pos).getDate()));
         holder.checkBox.setChecked(notes.get(pos).isComplite());
+
         if(notes.get(pos).isAlarm() && DateFormatManager
                 .isActual(notes.get(pos).getDate())) {
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_on_black);
         } else {
             holder.alarm.setBackgroundResource(R.mipmap.ic_alarm_off_grey);
+        }
+
+        String image = notes.get(pos).getImage();
+        if(notes.get(pos).getImage() != null) {
+            holder.image.getLayoutParams().height = 60;
+            holder.image.getLayoutParams().width = 60;
+            loadImage(image, holder.image);
         }
     }
 
@@ -81,6 +91,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         TextView date;
         CheckBox checkBox;
         ImageView alarm;
+        ImageView image;
 
         public NotesListViewHolder(View v) {
             super(v);
@@ -90,6 +101,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             date = (TextView) v.findViewById(R.id.tv_date);
             checkBox = (CheckBox) v.findViewById(R.id.check_box);
             alarm = (ImageView) v.findViewById(R.id.iv_alarm);
+            image = (ImageView) v.findViewById(R.id.iv_image);
         }
     }
 
@@ -110,5 +122,11 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
     private void cancelAlarm(int pos) {
         MyAlarmManager.cancelAlarm(myContext, MyAlarmReceiver.class, notes.get(pos).getId(),
                 notes.get(pos).getDate(), notes.get(pos).getName(), notes.get(pos).getText());
+    }
+
+    private void loadImage(String image, ImageView imageView) {
+        Picasso.with(myContext)
+                .load(image)
+                .into(imageView);
     }
 }

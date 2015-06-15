@@ -16,13 +16,43 @@
         android:textColorHint="@color/light_grey"
         android:hint="@string/name_hint"/>
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:inputType="textMultiLine"
         android:textSize="16sp"
+        android:layout_weight="0.4"
         android:id="@+id/et_description"
         android:textColorHint="@color/light_grey"
         android:hint="@string/description_hint"
         android:gravity="top"/>
+
+    <ViewAnimator
+        android:id="@+id/animator"
+        android:layout_weight="0.6"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@drawable/image_centered"
+        android:foregroundGravity="center"
+        android:animateFirstView="false"
+        android:layout_marginBottom="10dp"
+        >
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            />
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </ViewAnimator>
+        </LinearLayout>
 </LinearLayout>
