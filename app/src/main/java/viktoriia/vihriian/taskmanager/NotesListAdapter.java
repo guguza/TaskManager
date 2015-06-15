@@ -72,9 +72,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
         String image = notes.get(pos).getImage();
         if(notes.get(pos).getImage() != null) {
-            holder.image.getLayoutParams().height = 60;
-            holder.image.getLayoutParams().width = 60;
+            holder.image.getLayoutParams().height = 100;
+            holder.image.getLayoutParams().width = 100;
             loadImage(image, holder.image);
+        } else {
+            holder.image.getLayoutParams().height = 0;
+            holder.image.getLayoutParams().width = 0;
         }
     }
 
@@ -127,6 +130,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
     private void loadImage(String image, ImageView imageView) {
         Picasso.with(myContext)
                 .load(image)
+                .fit()
                 .into(imageView);
     }
 }
