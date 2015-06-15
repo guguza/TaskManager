@@ -74,7 +74,7 @@ public class MyFragmentManager {
         fragments.add(fragment);
     }
 
-    private Fragment removeFragmentFromArray(int position) {
+    public Fragment removeFragmentFromArray(int position) {
         Fragment currentFragment = fragments.get(position);
         fragments.remove(position);
         return currentFragment;

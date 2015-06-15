@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else if(currentFragmentName.contains("Login")) {
             showAlertDialog(R.string.title_exit, R.string.text_exit);
-
         } else {
             myFragmentManager.backToPreviousFragment(R.id.fragment_container);
             }
