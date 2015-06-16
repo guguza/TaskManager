@@ -39,6 +39,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
         mPrefs = SharedPreferencesManager.getInstance(getActivity());
 
+        login.requestFocus();
         registerButton.setOnClickListener(this);
 
         return view;
