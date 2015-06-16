@@ -124,6 +124,17 @@ public class NotesCreationFragment extends Fragment implements View.OnClickListe
             case R.id.action_alarm:
                 defineAlarmValue();
                 return true;
+            case R.id.action_image:
+                if(image == null) {
+                    openGallery();
+                } else {
+                    image = null;
+                    animator.setVisibility(View.GONE);
+                    ActionMenuItemView actionImage = (ActionMenuItemView) getView().findViewById(R.id.action_image);
+                    actionImage.setIcon(ResourcesCompat.getDrawable(getResources(),
+                            R.mipmap.ic_image_off, null));
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,6 +143,12 @@ public class NotesCreationFragment extends Fragment implements View.OnClickListe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == GALLERY_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             image = data.getData().toString();
+
+            ActionMenuItemView actionImage = (ActionMenuItemView) getView().findViewById(R.id.action_image);
+            actionImage.setIcon(ResourcesCompat.getDrawable(getResources(),
+                    R.mipmap.ic_image_on, null));
+            animator.setVisibility(View.VISIBLE);
+
             loadImage();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -266,10 +283,10 @@ public class NotesCreationFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+      /*  switch(view.getId()) {
             case R.id.image:
                 openGallery();
                 break;
-        }
+        }*/
     }
 }
